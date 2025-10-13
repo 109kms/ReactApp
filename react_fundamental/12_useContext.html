@@ -57,7 +57,7 @@
 <div id="root1"></div>
 <script type="text/babel">
 
-  // props drilling (좋지 않은 코드 구성)
+  // props drilling (좋지 않는 코드 구성)
 
   function App1() {
     const user = {
@@ -65,17 +65,17 @@
       age: 30,
     }
     return (
-      <Middle user={user}/>
+      <Middle1 user={user}/>
     )
   }
 
-  function Middle( {user} ) {
+  function Middle1( {user} ) {
     return (
-      <UserProfile user={user} />
+      <UserProfile1 user={user} />
     )
   }
 
-  function UserProfile( {user} ) {
+  function UserProfile1( {user} ) {
     return (
       <>
         <h1>{user.name}</h1>
@@ -84,7 +84,7 @@
     )
   }
 
-  ReactDOM.createRoot(document.getElementById('root1')).render(<App1/>);
+  ReactDOM.createRoot(document.getElementById('root1')).render(<App1 />);
 
 </script>
 
@@ -102,8 +102,8 @@
   // 최상위 컴포넌트에서 Context의 Provider를 이용해 값을 제공합니다.
   function App2() {
     const user = {
-      name: 'asdf',
-      age: 20,
+      name: 'james',
+      age: 40,
     }
     return (
       <UserContext.Provider value={user}>
@@ -121,6 +121,7 @@
     )
   }
 
+  // 하위 컴포넌트는 useContext()를 이용해 Context 사용(구독)
   function UserProfile2() {
 
     // UserContext의 Provider가 제공한 값을 사용하는 Consumer 설정
@@ -133,9 +134,95 @@
         <div>{user.age}</div>
       </div>
     )
+
   }
 
-  ReactDOM.createRoot(document.getElementById('root2')).render(<App2/>);
+  ReactDOM.createRoot(document.getElementById('root2')).render(<App2 />);
+
+</script>
+
+<hr>
+
+<div id="root3"></div>
+<script type="text/babel">
+
+  // reducer 함수 (formReducer)
+  const formReducer = (contact, action) => {
+    // action에 따른 새로운 state(contact 객체) 반환
+    return {
+      ...contact,  // 기존 contact 객체의 값을 그대로 사용합니다.
+      [action.name]: action.value,  // action으로 전달된 e.target 객체의 값을 이용해 email 또는 mobile을 수정합니다.
+    }
+  }
+
+  // Context 생성
+  const FormContext = React.createContext();
+
+  // <InputField> 컴포넌트
+  const InputField = ({ type, name, placeholder }) => {  // 객체 구조 분해 할당
+    // FormContext에 저장된 contact과 saveContact을 사용합니다.
+    const { contact, saveContact } = React.useContext(FormContext);
+    // event handler
+    const onChangeHandler = (e) => {
+      saveContact(e.target);
+    }
+    return (
+      <input 
+        type={type} 
+        name={name} 
+        placeholder={placeholder} 
+        value={contact[name]} 
+        onChange={onChangeHandler} />
+    )
+  }
+
+  // <Form> 컴포넌트
+  const Form = () => {
+    // FormContext에 저장된 contact을 사용합니다.
+    const { contact } = React.useContext(FormContext);
+    return (
+      <>
+        <InputField 
+          type="text"
+          name="email"
+          placeholder="id@example.com" />
+        <br/>
+        <InputField 
+          type="text"
+          name="mobile"
+          placeholder="010-0000-0000" />
+        <br/>
+        <h1>{contact.email}</h1>
+        <h1>{contact.mobile}</h1>
+      </>
+    )
+
+  }
+
+  // <FormContext.Provider>를 반환하는 <FormProvider> 컴포넌트
+  function FormProvider({ children }) {  // 하위 컴포넌트 <Form/>을 children으로 받습니다.
+    const initialContact = {
+      email: '',
+      mobile: '',
+    }
+    const [ contact, saveContact ] = React.useReducer(formReducer, initialContact);
+    return (
+      <FormContext.Provider value={ {contact, saveContact} }>
+        {children}
+      </FormContext.Provider>
+    )
+  }
+
+  // 최상위 컴포넌트
+  function App() {
+    return (
+      <FormProvider>
+        <Form />
+      </FormProvider>
+    )
+  }
+
+  ReactDOM.createRoot(document.getElementById('root3')).render(<App />);
 
 </script>
 
