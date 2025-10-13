@@ -54,5 +54,90 @@
       - React.createContext()를 이용해 생성한 컨텍스트입니다.
 -->
 
+<div id="root1"></div>
+<script type="text/babel">
+
+  // props drilling (좋지 않은 코드 구성)
+
+  function App1() {
+    const user = {
+      name: 'jessica',
+      age: 30,
+    }
+    return (
+      <Middle user={user}/>
+    )
+  }
+
+  function Middle( {user} ) {
+    return (
+      <UserProfile user={user} />
+    )
+  }
+
+  function UserProfile( {user} ) {
+    return (
+      <>
+        <h1>{user.name}</h1>
+        <h1>{user.age}</h1>
+      </>
+    )
+  }
+
+  ReactDOM.createRoot(document.getElementById('root1')).render(<App1/>);
+
+</script>
+
+<hr>
+
+<div id="root2"></div>
+<script type="text/babel">
+
+  // Context 생성 (생성 및 초기화)
+  const UserContext = React.createContext({
+    name: 'default',
+    age: 0,
+  });
+
+  // 최상위 컴포넌트에서 Context의 Provider를 이용해 값을 제공합니다.
+  function App2() {
+    const user = {
+      name: 'asdf',
+      age: 20,
+    }
+    return (
+      <UserContext.Provider value={user}>
+        <Middle2 />
+      </UserContext.Provider>
+    )
+  }
+
+  function Middle2() {
+    return (
+      <>
+        <h1>Middle 컴포넌트</h1>
+        <UserProfile2 />
+      </>
+    )
+  }
+
+  function UserProfile2() {
+
+    // UserContext의 Provider가 제공한 값을 사용하는 Consumer 설정
+    const user = React.useContext(UserContext);
+
+    return (
+      <div style={{ marginLeft: '20px', }}>
+        <h3>UserProfile 컴포넌트</h3>
+        <div>{user.name}</div>
+        <div>{user.age}</div>
+      </div>
+    )
+  }
+
+  ReactDOM.createRoot(document.getElementById('root2')).render(<App2/>);
+
+</script>
+
 </body>
 </html>
