@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <title>state</title>
+</head>
+<body>
+
+<!--
+1. state (상태)
+  1) state는 컴포넌트 내부에서 관리되는 동적인 데이터를 의미합니다.
+  2) 컴포넌트의 state는 시간이 지남에 따라, 또는 사용자와의 상호작용에 따라 변경될 수 있으며, state가 변경되면 해당 컴포넌트와 그 자식 컴포넌트가 자동으로 다시 렌더링됩니다.
+  3) 클래스형 컴포넌트는 state를 직접 사용할 수 있습니다.
+  4) 함수형 컴포넌트는 v16.8 이후 React.useState() 훅(Hooks)을 이용해서 state를 사용할 수 있습니다.
+    (함수형 컴포넌트의 내용은 여기서는 다루지 않습니다. 별도로 다루게 됩니다.)
+
+
+2. state 선언 및 초기화
+  1) 클래스형 컴포넌트에서는 state를 객체 형태로 선언합니다. state에 저장하는 값은 객체 리터럴 형식 {}을 갖춰야 합니다.
+  2) 보통 생성자(constructor)에서 this.state로 초기화합니다.
+  3) ES6 문법을 사용하면 생성자 없이 클래스 필드로 바로 선언할 수도 있습니다.
+
+
+3. state 값 변경
+  1) state의 값을 직접 변경하지 않고, 반드시 this.setState() 메소드를 사용해야 합니다.
+    (this.state를 직접 변경하면 렌더링이 일어나지 않습니다.)
+  2) setState()
+    (1) setState() 메소드를 호출하면 리액트가 변경을 감지하고 컴포넌트를 리렌더링합니다.
+    (2) setState() 메소드는 비동기 방식으로 백그라운드에서 동작합니다.
+    (3) setState() 메소드는 비동기 방식이므로 하나의 이벤트에서 setState() 메소드를 여러 번 호출하더라도 state 값이 순차적으로 사용되지 않습니다.
+    (4) 예시
+      this.setState({
+        count: this.state.count + 1
+      });
+  3) prevState
+    (1) setState()는 비동기적으로 동작하므로 이전 값을 기반으로 변경할 때는 함수형 업데이트를 사용합니다. (콜백 사용)
+    (2) 콜백 함수의 첫 번째 인자는 이전 state의 값을 가지고 있는 prevState를 사용합니다.
+    (3) 콜백 함수의 두 번째 인자는 props 객체를 사용합니다. (사용하지 않는다면 props는 생략 가능합니다.)
+    (4) 콜백 함수는 최종적으로 state를 객체 리터럴 {} 형태로 반환합니다.
+    (5) 예시
+      this.setState((prevState) => ({
+        count: prevState.count + 1
+      }));
+
+
+4. 클래스형 컴포넌트와 state 예시
+  class Counter extends React.Component {
+    // 생성자에서 초기화
+    constructor(props) {
+      super(props);
+      this.state = {
+        count: 0
+      };
+    }
+    // 또는 클래스 필드로 선언
+    state = {
+      count: 0
+    };
+    render() {
+      return <div>{this.state.count}</div>;
+    }
+  }
+-->
+
+<div id="root1"></div>
+<script type="text/babel">
+
+  class Spin1 extends React.Component {
+
+    //----- state 선언 및 초기화
+    state = {
+      number: 0,
+    }
+    //----- 증가용 이벤트 핸들러
+    increaseHandler = () => {
+      this.setState({
+        number: this.state.number + 1
+      })
+    }
+
+    //----- 감소용 이벤트 핸들러
+    decreaseHandler = () => {
+      this.setState({
+        number: this.state.number -2
+      })
+    }
+
+
+    //----- rendering
+    render() {
+      return (
+        <>
+          <h1>{this.state.number}</h1> {/*this는 Spin1을 의미*/}
+          <button onClick={this.increaseHandler}>👍</button>
+          <button onClick={this.decreaseHandler}>👎👎</button>
+        </>
+      )
+    }
+
+  }
+
+  ReactDOM.createRoot(document.getElementById('root1')).render(<Spin1 />)
+
+</script>
+
+<hr>
+
+<div id="root2"></div>
+<script type="text/babel">
+
+  class Spin2 extends React.Component {
+
+    //----- 생성자를 이용한 state 선언 및 초기화
+    constructor(props) {
+      super(props);
+      this.state = {
+        number: 0
+      }
+    }
+
+    //----- 증가용 이벤트 핸들러
+    increaseHandler = () => {
+      this.setState((prevState) => {
+        return {
+          number: prevState.number + 1
+        }
+      })
+    }
+
+
+    //----- 감소용 이벤트 핸들러
+    decreaseHandler = () => {
+      this.setState((prevState) => {
+        return {
+          number: prevState.number - 1
+        }
+      })
+    }
+
+    //----- rendering
+    render() {
+      const { number } = this.state;
+      const textColor = number === 0 ? 'black' : number > 0 ? 'red' : 'blue';
+      return (
+        <>
+          <h1 style={{ color: textColor }}>{number}</h1> 
+          <button onClick={this.increaseHandler}>👍</button>
+          <button onClick={this.decreaseHandler}>👎</button>
+        </>
+      )
+    }
+    
+
+  }
+  ReactDOM.createRoot(document.getElementById('root2')).render(<Spin2 />)
+
+</script>
+
+</body>
+</html>
