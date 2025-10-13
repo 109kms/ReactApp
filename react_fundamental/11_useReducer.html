@@ -103,5 +103,76 @@
 
 </script>
 
+<hr>
+
+<div id="root2"></div>
+<script type="text/babel">
+
+  // 함수형 컴포넌트 (함수 표현식 사용해 보기)
+  const Form = () => {
+
+    // 초기 state 객체
+    const initialContact = {
+      email: '',
+      mobile: '',
+    }
+
+    // useReducer
+    const [ contact, saveContact ] = React.useReducer(formReducer, initialContact);
+
+    // event handler
+    const onChangeHandler = (e) => {
+      saveContact(e.target);  // e.target 객체는 formReducer 함수의 action으로 전달됩니다.
+    }
+
+    return (
+      <>
+        <InputField 
+          type="text"
+          name="email"
+          placeholder="id@example.com"
+          value={contact.email}
+          onChangeHandler={onChangeHandler} />
+        <br/>
+        <InputField 
+          type="text"
+          name="mobile"
+          placeholder="010-0000-0000"
+          value={contact.mobile}
+          onChangeHandler={onChangeHandler} />
+        <br/>
+        <h1>{contact.email}</h1>
+        <h1>{contact.mobile}</h1>
+      </>
+    )
+
+  }
+
+  // InputField 컴포넌트
+  const InputField = ({ type, name, placeholder, value, onChangeHandler }) => {  // 객체 구조분해할당
+    return (
+      <input 
+        type={type}
+        name={name}
+        placeholder={placeholder} 
+        value={value} 
+        onChange={onChangeHandler} />
+    )
+  }
+
+  // reducer 함수 (formReducer)
+  const formReducer = (contact, action) => {
+    // action에 따른 새로운 state(contact 객체) 반환
+    return {
+      ...contact,  // 기존 contact 객체의 값을 그대로 사용합니다.
+      [action.name]: action.value,  // action으로 전달된 e.target 객체의 값을 이용해 email 또는 mobile을 수정합니다.
+    }
+  }
+
+  // 렌더링
+  ReactDOM.createRoot(document.getElementById('root2')).render(<Form/>);
+
+</script>
+
 </body>
 </html>
