@@ -1,6 +1,8 @@
 import logo from './logo.svg';
 import './App.css';
-import { Link, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import About from './pages/About';
 import User from './pages/User';
 
 function App() {
@@ -8,12 +10,10 @@ function App() {
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <nav>
-          <Link to="/user/1">User1</Link> | <Link to="/user/2">User2</Link>
-        </nav>
         <Routes>
-          {/* 경로변수는 콜론(:)을 붙여서 작성합니다. */}
-          <Route path="/user/:uid" element={<User/>}/>
+          <Route index element={<Home/>}/>
+          <Route path='/about' element={<About/>}/>
+          <Route path='/user/:uid' element={<User/>}/>
         </Routes>
       </header>
     </div>
