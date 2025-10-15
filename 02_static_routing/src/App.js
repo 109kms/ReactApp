@@ -1,6 +1,8 @@
 import logo from './logo.svg';
 import './App.css';
-import { Link } from 'react-router-dom';
+import { Link, Route, Routes } from 'react-router-dom';
+import Home from './pages/home';
+import About from './pages/about';
 
 /*
   static routing
@@ -24,6 +26,11 @@ function App() {
         <nav>
           <Link to="/">Home</Link> | <Link to="/about">About</Link>
         </nav>
+        {/* 경로에 따라서 컴포넌트를 선택해서 엽니다. */}
+        <Routes>
+          <Route path='/' element={<Home/>} />
+          <Route path='/about' element={<About/>} />
+        </Routes>
       </header>
     </div>
   );
