@@ -9,7 +9,16 @@
 
 import { configureStore } from '@reduxjs/toolkit';
 
+// counterSlice의 export default counterSlice.reducer를 import (이름은 자유롭게 지정)
+import counterSlice from './features/counterSlice';
+
 // 스토어 생성
 export const store = configureStore({
+
+  // reducer : 슬라이스 등록
+  // 객체 등록 시 키를 등록하면 해당 키는 상태 트리 키 이름이 됩니다. ( state.counter.number )
+  reducer: {
+    counter: counterSlice,
+  }
 
 });

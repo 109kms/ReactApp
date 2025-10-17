@@ -15,7 +15,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 // 슬라이스 생성
-const counterSlice = createSlice({
+export const counterSlice = createSlice({
 
   // 슬라이스 구성1 : 이름 (액션 타입의 prefix로 사용)
   name: "counter",
@@ -28,7 +28,8 @@ const counterSlice = createSlice({
   // 슬라이스 구성3 : 리듀서 (리듀서 함수들을 등록하는 객체)
   reducers: {
 
-    // 액션1(increment)에 대한 리듀서 함수
+    // 액션1(increment)에 대한 리듀서 함수(현재 상태를 인자로 받음)
+    // 액션 생성자 increment()가 자동으로 등록되고 export 됩니다.
     increment: ( state ) => {
       // 리덕스 툴킷을 사용하면, Immer 라이브러리가 상태 변경을 처리해 주기 때문에
       // 상태를 직접 변경하는 것처럼 코드를 작성해도 됩니다. (실제로는 상태의 불변성을 유지해 주고 새로운 상태를 반환해 줍니다.)
@@ -36,11 +37,13 @@ const counterSlice = createSlice({
     },
 
     // 액션2(decrement)에 대한 리듓 함수
+    // 액션 생성자 decrement()가 자동으로 등록되고 export 됩니다.
     decrement: ( state ) => {
       state.number -= 1;
     },
 
     // 액션3(incrementByAmount)에 대한 리듀서 함수(사용 안 함)
+    // 액션 생성자 incrementByAmount()가 자동으로 등록되고 export 됩니다.
     incrementByAmount: ( state, action ) => {
       state.number += action.payload;
     }
@@ -48,3 +51,10 @@ const counterSlice = createSlice({
   }
 
 });
+
+// 스토어에서 등록할 슬라이스를 export (리듀서를 export 합니다.)
+export default counterSlice.reducer;
+
+// 액션 생성자를 export
+// 컴포넌트에서 액션을 사용 (dispatch 할 때 액션 생성자를 사용)
+export const { increment, decrement } = counterSlice.actions
