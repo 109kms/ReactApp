@@ -14,5 +14,29 @@ const counterStore = create((set, get) => ({
   number: 0,
 
   // 액션1(increment)
-  
+  increment: () => {
+    // 상태를 변경하기 위해서 zustand 내장 함수 set() 호출
+    // set() 호출 시 상태를 변경하는 리듀서 함수 등록
+    set((state) => {
+      // 기존 state 변경 없이 새로운 상태를 반환
+      return {
+        number: state.number + 123456789
+      }
+    })
+  },
+
+  // 액션2(decrement)
+  decrement: () =>
+    set(state => ({
+      number: state.number - 1
+    })),
+
+  // 액션3(reset)
+  reset: () =>
+    set(state => ({
+      number: 0
+    })),
+
 }));
+
+export default counterStore;
