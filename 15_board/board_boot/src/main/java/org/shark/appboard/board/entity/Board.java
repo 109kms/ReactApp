@@ -28,22 +28,22 @@ public class Board {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long bid;
-
+  
   @Column(nullable = false, length = 200)
   private String title;
-
+  
   @Column(columnDefinition = "TEXT")
   private String content;
-
+  
   @CreatedDate
-  @Column(name = "created_at")
+  @Column(name = "created_at", updatable = false)
   private LocalDateTime createdAt;
-
+  
   @LastModifiedDate
   @Column(name = "updated_at")
   private LocalDateTime updatedAt;
-  
-  protected Board() {}
+
+  protected Board() { }
   
   private Board(String title, String content) {
     this.title = title;
@@ -53,13 +53,16 @@ public class Board {
   public static Board createBoard(String title, String content) {
     return new Board(title, content);
   }
-
-  @Override
-  public String toString() {
-    return "Board [bid=" + bid + ", title=" + title + ", content=" + content + ", createdAt=" + createdAt
-        + ", updatedAt=" + updatedAt + "]";
+  
+  public void updateBoard(String title, String content) {
+    this.title = title;
+    this.content = content;
   }
   
+  @Override
+  public String toString() {
+  return "Board [bid=" + bid + ", title=" + title + ", content=" + content + ", createdAt=" + createdAt
+      + ", updatedAt=" + updatedAt + "]";
+  }
   
-
 }

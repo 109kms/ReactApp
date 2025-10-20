@@ -1,7 +1,5 @@
 package org.shark.appboard.board.dto.response;
 
-import java.util.Map;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,8 +13,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
-public class ResponseDTO {
+public class ResponseDTO<T> {
   private int status;
   private String message;
-  private Map<String, Object> results;
+  private T data;
 }

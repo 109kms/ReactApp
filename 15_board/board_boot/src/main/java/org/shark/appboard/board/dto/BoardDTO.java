@@ -15,9 +15,10 @@ import lombok.ToString;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Builder
+@ToString
 public class BoardDTO {
+  
   private Long bid;
   private String title;
   private String content;
@@ -29,13 +30,15 @@ public class BoardDTO {
   }
   
   public static BoardDTO toDTO(Board board) {
+    if (board == null)
+      return null;
     return BoardDTO.builder()
         .bid(board.getBid())
         .title(board.getTitle())
         .content(board.getContent())
         .createdAt(board.getCreatedAt())
         .updatedAt(board.getUpdatedAt())
-        .build();
+      .build();
   }
   
 }
