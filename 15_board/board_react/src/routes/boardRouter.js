@@ -16,6 +16,7 @@ export const boardRouter = createBrowserRouter([
     element: <Layout/>,
     // "/" 자식 라우트 (<Layout>의 <Outlet>에 렌더링할 페이지)
     children: [
+      //----- "/"
       {
         index: true,
         element: (
@@ -26,9 +27,9 @@ export const boardRouter = createBrowserRouter([
       },
       {
         path: "boards",
-        // boards 하위 라우트
+        // "/boards" 하위 라우트
         children: [
-          //----- /boards
+          //----- "/boards"
           {
             index: true,
             element: (
@@ -37,8 +38,8 @@ export const boardRouter = createBrowserRouter([
               </Suspense>
             ),
           },
+          //----- "/boards/create"
           {
-            //----- /boards/create
             path: "create",
             element: (
               <Suspense fallback={<div>Loading...</div>}>
@@ -47,7 +48,7 @@ export const boardRouter = createBrowserRouter([
             ),
           },
           {
-            //----- /boards/detail/1
+            //----- "/boards/detail/1"
             path: "detail/:bid",
             element: (
               <Suspense fallback={<div>Loading...</div>}>
@@ -56,7 +57,7 @@ export const boardRouter = createBrowserRouter([
             ),
           },
           {
-            //----- /boards/update/1
+            //----- "/boards/update/1"
             path: "update/:bid",
             element: (
               <Suspense fallback={<div>Loading...</div>}>
@@ -66,6 +67,6 @@ export const boardRouter = createBrowserRouter([
           },
         ],
       },
-    ]
-  }
-])
+    ],
+  },
+]);

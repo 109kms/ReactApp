@@ -99,7 +99,7 @@ export const getBoard = async (bid) => {
 
 // 게시글 목록 조회
 export const getBoardList = async (pageParam) => {
-  const { page = 1, size = 10, sort = "createdAt,desc" } = pageParams;
+  const { page = 1, size = 10, sort = "createdAt,desc" } = pageParam;
 
   try {
     const response = await boardAPI.get("", {
