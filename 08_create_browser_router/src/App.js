@@ -1,6 +1,5 @@
-import logo from './logo.svg';
 import './App.css';
-import { Link, RouterProvider } from 'react-router-dom';
+import { RouterProvider } from 'react-router-dom';
 import { router } from './routes/router';
 
 function App() {
