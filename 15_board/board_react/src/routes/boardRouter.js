@@ -63,9 +63,9 @@ export const boardRouter = createBrowserRouter([
                 <UpdatePage/>
               </Suspense>
             ),
-          }
-        ]
-      }
+          },
+        ],
+      },
     ]
   }
 ])
