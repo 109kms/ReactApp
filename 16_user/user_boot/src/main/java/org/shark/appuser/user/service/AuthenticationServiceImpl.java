@@ -19,6 +19,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
   private final UserRepository userRepository;
   private final PasswordEncoder passwordEncoder;
+  private final JwtService jwtService;
   
   // 회원가입
   @Override
@@ -40,10 +41,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     User savedUser = userRepository.save(user);
     
     // JWT 토큰 생성 (AccessToken, RefreshToken)
+    String accessToken = jwtService.generateToken(null, savedUser);
     
     // 인증 응답 DTO 반환
     return AuthenticationResponseDTO.builder()
-              .accessToken(null)
+              .accessToken(accessToken)
               .refreshToken(null)
               .email(savedUser.getEmail())
               .nickname(savedUser.getNickname())
@@ -60,10 +62,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                         .orElseThrow(() -> new RuntimeException(request.getEmail() + "은(는) 이미 존재하지 않습니다."));
     
     // JWT 토큰 생성 (AccessToken, RefreshToken)
+    String accessToken = jwtService.generateToken(null, foundUser);
     
     // 인증 응답 DTO 반환
     return AuthenticationResponseDTO.builder()
-              .accessToken(null)
+              .accessToken(accessToken)
               .refreshToken(null)
               .email(foundUser.getEmail())
               .nickname(foundUser.getNickname())

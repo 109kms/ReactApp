@@ -7,12 +7,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class AppConfig {
-
-  // spring security가 지원하는 비밀번호 암호화
-  @Bean
-  PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
   
   /* JwtUserDetailsService 클래스를 대체할 수 있는 빈 */
   //----- 1. 익명 객체 활용
