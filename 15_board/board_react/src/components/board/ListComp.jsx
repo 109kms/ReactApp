@@ -1,8 +1,9 @@
 import useBoardNavigate from "../../hooks/useBoardNavigate";
 import { getBoardList } from "../../api/boardAPI";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import PageComp from "../common/PageComp";
 
-// 초기 state
+// 초기 state 
 const INITIAL_SERVER_DATA = {
   status: 0,
   message: "",
@@ -22,29 +23,48 @@ const INITIAL_SERVER_DATA = {
 
 const ListComp = () => {
   // useBoardNavigate()
-  const { currentPageParams, goToDetailPage } = useBoardNavigate();
+  const { currentPageParams, goToDetailPage, goToCreatePage, goToListPage } = useBoardNavigate();
   const { page, size, sort } = currentPageParams;
 
   // useState()
   const [ serverData, setServerData ] = useState(INITIAL_SERVER_DATA);
 
+  /* useCallback() 없는 버전 */
+  /*
   // 서버 데이터(게시글 목록) 가져오는 함수
   const getServerData = async () => {
     try {
-      const responseData = await getBoardList(currentPageParams);
+      const responseData = await getBoardList( { page, size, sort } );
       setServerData(responseData);
     } catch (error) {
       console.error("게시글 목록 로드 실패:", error);
     }
-  }
-
+  };
+  
   // useEffect()
   useEffect(() => {
     getServerData();
   }, [page, size, sort]);
+  */
 
-  // serverdata에서 사용할 데이터 꺼내기
-  const totalElements = serverData.data?.totalElements;
+  /* useCallback() 있는 버전 */
+  // 서버 데이터(게시글 목록) 가져오는 함수
+  const getServerData = useCallback(async () => {
+    try {
+      const responseData = await getBoardList( { page, size, sort } );
+      setServerData(responseData);
+    } catch (error) {
+      console.error("게시글 목록 로드 실패:", error);
+    }
+  }, [page, size, sort]);
+
+  // useEffect()
+  useEffect(() => {
+    getServerData();
+  }, [getServerData]);
+
+  // serverData에서 사용할 데이터 꺼내기 (?. : 옵셔널 체이닝. null이나 undefined가 발생하면 바로 undefiend 반환)
+  const totalElements = serverData.data?.totalElements || 0;
   const boardList = serverData.data?.content || [];
 
   // handleTitleClick (제목 클릭 핸들러)
@@ -60,12 +80,15 @@ const ListComp = () => {
       day: "2-digit",
       hour: "2-digit",
       minute: "2-digit",
-      second: "2-digit"
+      second: "2-digit",
     })
   }
 
   return (
     <div>
+      <div>
+        <button onClick={() => goToCreatePage()}>글쓰기</button>
+      </div>
       <div style={{ textAlign: "right" }}>
         총 {totalElements}개의 게시글
       </div>
@@ -92,18 +115,34 @@ const ListComp = () => {
                   { totalElements - (serverData.data?.number * serverData.data?.size) - index }
                 </td>
                 <td>
-                  <span style={{cursor: "pointer"}} onClick={() => handleTitleClick(board.bid)}>{ board.title }</span>
+                  <span onClick={() => handleTitleClick(board.bid)}
+                        style={{ cursor: "pointer" }}>
+                    { board.title }
+                  </span>
                 </td>
                 <td>
                   { formatDateTime(board.createdAt) }
                 </td>
                 <td>
-                  { formatDateTime(board.createdAt) }
+                  { formatDateTime(board.updatedAt) }
                 </td>
               </tr>
             ))
-          )}
+          ) }
         </tbody>
+        <tfoot>
+          <tr>
+            <td colSpan={4}>
+              {boardList.length > 0 && (
+                <PageComp 
+                  onPageChange={goToListPage}                // 페이지 변경 함수
+                  currentPageParams={currentPageParams}      // 현재 페이징 정보
+                  pageData={serverData.data}                 // Boot의 Page객체(페이징 데이터)
+                />
+              )}
+            </td>
+          </tr>
+        </tfoot>
       </table>
     </div>
   );
