@@ -41,7 +41,50 @@ class CookieUtils {
 
   }
 
-  
+  /**
+   * 쿠키 가져오기
+   * @param { string } name - 쿠키 이름
+   * @returns { string | null } - 쿠키 값 또는 null
+   */
+  static get(name) {
+    const encodedName = encodeURIComponent(name);
+    const cookies = document.cookie.split(";");
+    for (let i = 0; i < cookies.length; i++) {
+      let cookie = cookies[i];
+      while (cookie.charAt(0) === " ")
+        cookie = cookie.substring(1);
+      if (cookie.indexOf(encodedName) === 0)
+        decodeURIComponent(cookie.substring(encodedName.length + 1));
+    }
+    return null;
+  }
+
+  /**
+   * 쿠키 삭제하기
+   * @param { string } name - 쿠키 이름
+   * @param { object } options - 쿠키 옵션 (path, domain)
+   */
+  static remove(name, options = {}) {
+    CookieUtils.set(name, "", {
+      ...options,
+      expires: -1,  // 과거 날짜를 전달하면 곧바로 삭제
+    })
+  }
+
+  /**
+   * 모든 쿠키 가져오기
+   * @returns { object } - 모든 쿠키 객체
+   */
+  static getCookies() {
+    let cookies = {};
+    document.cookie.split(";").forEach( cookie => {
+      const [ name, value ] = cookie.trim().split("=");
+      if (name && value) {
+        cookies[decodeURIComponent(name)] = decodeURIComponent(value);
+      }
+    } )
+    return cookies;
+  }
 
 }
 
