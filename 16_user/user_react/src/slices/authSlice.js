@@ -13,7 +13,7 @@ import CookieUtils from "../utils/cookies";
  * 2. auth/register/fulfilled - 요청 성공
  * 3. auth/register/rejected - 요청 실패
  */
-const registerUser = createAsyncThunk(
+export const registerUser = createAsyncThunk(
   "auth/register",  // 액션 타입
   async (userData, { rejectWithValue }) => {
     try {
@@ -52,9 +52,28 @@ const authSlice = createSlice({
   name: "auth",  // 슬라이스 이름
   initialState,  // 초기 상태
 
-  // reducers: 동기 액션 처리
+  // reducers
+  // 동기 액션 정의하는 부분입니다.
+  // 여기에 정의한 함수는 자동으로 액션 생성자가 됩니다.
   reducers: {
-    // 로그아웃
+    /**
+     * 로그아웃 액션
+     * 
+     * - 액션 타입  : "auth/logout"
+     * - 액션 생성자: logout() - 자동으로 생성되는 함수
+     * 
+     * - 액션 생성자 호출 (실행하고 싶을 때)
+     * dispatch(logout())
+     */
+    logout: (state) => {
+      // 리덕스 툴킷의 경우 Immer 라이브러리가 직접 state를 수정하더라도 새로운 state를 반환하는 방식으로 처리합니다.
+      state.user = null;
+      state.accessToken = null;
+      state.isAuthenticated = false;
+      state.error = null;
+      // accessToken 쿠키 제거
+      CookieUtils.remove("accessToken", {});
+    }
   },
   // extraReducers
   // 외부에서 생성한 액션을 처리합니다.
@@ -98,4 +117,17 @@ const authSlice = createSlice({
         .addCase();
 
   }
-})
+});
+
+/**
+ * 액션 생성자를 export
+ * authSlice.actions에는 reducers에 정의한 함수들이
+ * 액션 생성자로 자동 변환되어 있습니다.
+ */
+export const { logout } = authSlice.actions;
+
+/**
+ * 리듀서 함수를 default export
+ * 이 리듀서는 store에서 사용합니다.
+ */
+export default authSlice;
